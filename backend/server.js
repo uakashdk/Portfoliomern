@@ -20,13 +20,14 @@ const app = express();
 const server = http.createServer(app);
 
 // ✅ Common CORS config for both Express and Socket.IO
-const corsOptions = {
-  origin: process.env.CORS_ORIGIN || "*",
-  credentials: true,
-};
+const cors = require("cors");
 
-// Apply CORS to Express
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: ["https://akashkumardubey.netlify.app", "http://localhost:3000"],
+    credentials: true,
+  })
+);
 
 // Apply middleware
 app.use(morgan("dev"));
