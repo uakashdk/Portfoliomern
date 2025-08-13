@@ -19,31 +19,42 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Common CORS config for both Express and Socket.IO
+// ---- CORS (one place, reused) ----
+const allowedOrigins = [
+  "https://akashkumardubey.netlify.app",
+  "http://localhost:3000",
+];
 
-app.use(
-  cors({
-    origin: ["https://akashkumardubey.netlify.app", "http://localhost:3000"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    // allow requests with no origin (e.g., curl, mobile apps)
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+};
 
-// Apply middleware
+app.use(cors(corsOptions));
+// (optional but helpful for preflight)
+app.options("*", cors(corsOptions));
+
+// ---- Middleware ----
 app.use(morgan("dev"));
 app.use(express.json());
 
-// Database connection
+// ---- DB ----
 ConnectDB();
 
-// ✅ Socket.IO init
+// ---- Socket.IO ----
 const io = new Server(server, {
-  cors: corsOptions,
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
 });
-
-// Socket.IO events
 commentSocket(io);
 
-// Routes
+// ---- Routes ----
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/blog", blogRoute);
 app.use("/api/v1/project", projectRoute);
@@ -52,6 +63,7 @@ app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/readBlog", readBlogRoute);
 app.use("/api/v1/comments", commentRoute);
 
+// ---- Start ----
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
