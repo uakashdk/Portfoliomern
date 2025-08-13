@@ -20,7 +20,6 @@ const app = express();
 const server = http.createServer(app);
 
 // ✅ Common CORS config for both Express and Socket.IO
-const cors = require("cors");
 
 app.use(
   cors({
