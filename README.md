@@ -110,3 +110,14 @@ Socket.IO integration for real-time features (comments, notifications).
 /Middleware – Authentication and authorization middleware
 
 /Config – Database and environment configurations
+
+Command to clone repo - git clone https://github.com/uakashdk/Portfoliomern.git
+
+# Backend
+cd backend
+npm install
+
+# Frontend
+cd ../frontend
+npm install
+
