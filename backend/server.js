@@ -21,18 +21,19 @@ const server = http.createServer(app);
 
 // ---- CORS (one place, reused) ----
 const allowedOrigins = [
-  "https://akashkumardubey.netlify.app",
-  "http://localhost:3000",
-  "https://akashkumardubey.in",
+  "https://akashkumardubey.in", // main live frontend
+  "https://akashkumardubey.netlify.app", // Netlify project
+  "http://localhost:3000", // local dev
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (e.g., curl, mobile apps)
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    // allow requests with no origin (curl, mobile apps)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error("Not allowed by CORS"));
   },
-  credentials: true,
+  credentials: true, // needed if using cookies or JWT
 };
 
 app.use(cors(corsOptions));
