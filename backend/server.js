@@ -5,6 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import authRoute from "./Routes/authRoutes.js";
 import blogRoute from "./Routes/blogRoutes.js";
+import ExperienceRoute from "./Routes/ExperienceRoutes.js";
 import projectRoute from "./Routes/projectRoutes.js";
 import clientRoute from "./Routes/clientRoutes.js";
 import contactRoute from "./Routes/contactRoutes.js";
@@ -59,6 +60,7 @@ commentSocket(io);
 // ---- Routes ----
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/blog", blogRoute);
+app.use("/api/v1/experience", ExperienceRoute);
 app.use("/api/v1/project", projectRoute);
 app.use("/api/v1/client", clientRoute);
 app.use("/api/v1/contact", contactRoute);
