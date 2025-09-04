@@ -65,7 +65,7 @@ app.use("/api/v1/project", projectRoute);
 app.use("/api/v1/client", clientRoute);
 app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/readBlog", readBlogRoute);
-app.use("/api/v1/comments", commentRoute);
+app.use("/api/v1/blogses", commentRoute);
 
 // ---- Start ----
 const PORT = process.env.PORT || 8000;

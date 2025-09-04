@@ -3,11 +3,17 @@ export const commentSocket = (io) => {
     console.log("A user connected:", socket.id);
 
     // Listen for new comments
-    socket.on("newComment", (data) => {
-      console.log("New comment received:", data);
-      // Broadcast the new comment to all connected clients
-      io.emit("commentAdded", data);
+    socket.on("newComment", async (data) => {
+      const newComment = await Comment.create({
+        blogId: data.blogId,
+        text: data.text,
+        author: data.author,
+        userId: data.userId,
+      });
+      io.emit("commentAdded", newComment);
     });
+
+    socket.emit("commentError", { message: "Failed to save comment" });
 
     // Handle user disconnection
     socket.on("disconnect", () => {

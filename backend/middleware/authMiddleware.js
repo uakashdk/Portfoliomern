@@ -2,36 +2,27 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 
 // Middleware for token-based protected routes
-export const requireSignIn = (req, res, next) => {
+export const requireSignIn = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-
-    // Check if the Authorization header is provided and starts with 'Bearer '
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
-        success: false,
-        message: "Authorization token is required",
-      });
+      return res
+        .status(401)
+        .json({ message: "Authorization token is required" });
     }
 
-    // Extract the token
     const token = authHeader.split(" ")[1];
-
-    // Verify the token using the secret key from .env
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log("Decoded Token in requireSignIn:", decoded); // Debugging log
+    const user = await userModel.findById(decoded._id).select("_id name role");
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
 
-    req.user = decoded; // Attach decoded payload to request object
-
-    next(); // Call the next middleware or route handler
+    req.user = user; // yaha ab proper name, _id aayega
+    next();
   } catch (error) {
-    console.error("Token verification error:", error.message);
-    return res.status(401).json({
-      success: false,
-      message: "Invalid or expired token",
-      error: error.message,
-    });
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 

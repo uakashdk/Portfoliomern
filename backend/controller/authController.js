@@ -115,7 +115,7 @@ export const loginController = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { _id: user._id, role: user.role }, // Use `_id` to match MongoDB convention
+      { _id: user._id, name: user.name, role: user.role }, // Use `_id` to match MongoDB convention
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -217,11 +217,9 @@ export const resetPasswordController = async (req, res) => {
       });
     }
 
-    // ✅ Token verify – must match the one created during forgot-password
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use exact same secret
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log("Decoded Token:", decoded);
 
-    // ✅ Get user from token
     const user = await userModel.findById(decoded._id);
     console.log("user name", user);
     if (!user) {
@@ -231,7 +229,6 @@ export const resetPasswordController = async (req, res) => {
       });
     }
 
-    // ✅ Hash and update password
     user.password = await hashPassword(newPassword);
     await user.save();
 
@@ -251,13 +248,12 @@ export const resetPasswordController = async (req, res) => {
   }
 };
 
-// controller/updateMe.js
 export const getUserDetailsById = async (req, res) => {
   try {
-    const userId = req.params.id; // 👈 Use `params`, not `query`
+    const userId = req.params.id;
     console.log("User ID:", userId);
 
-    const user = await userModel.findById(userId); // or however you're fetching
+    const user = await userModel.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -272,7 +268,7 @@ export const getUserDetailsById = async (req, res) => {
 export const userController = async (req, res) => {
   try {
     const { userId, name } = req.body;
-    const file = req.file; // Multer already uploaded to Cloudinary
+    const file = req.file;
 
     if (!userId) {
       return res.status(400).json({

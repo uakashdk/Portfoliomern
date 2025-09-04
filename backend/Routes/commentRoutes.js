@@ -9,16 +9,10 @@ import {
 
 const router = express.Router();
 
-// Add a comment (requires authentication)
-router.post("/add-comment", authenticateUser, addComment);
+router.post("/:blogId/comments", authenticateUser, addComment);
 
-// Reply to a comment by its ID (requires authentication)
-router.post("/:commentId/reply", authenticateUser, replyToComment);
+router.post("/comments/:commentId/reply", authenticateUser, replyToComment);
 
-// Fetch all comments
-router.get("/fetch-comment", fetchComments);
+router.get("/:blogId/comments", fetchComments);
 
 export default router;
-
-
-// /api/v1/blog/blogs
